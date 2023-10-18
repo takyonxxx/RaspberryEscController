@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     initButtons();
 
-    setWindowTitle(tr("BalanceRobot Remote Control"));
+    setWindowTitle(tr("Esc Remote Control"));
 
     ui->m_textStatus->setStyleSheet("font-size: 12pt; color: #cccccc; background-color: #003333;");
     ui->m_pBConnect->setStyleSheet("font-size: 32pt; font: bold; color: #ffffff; background-color: #336699;");
