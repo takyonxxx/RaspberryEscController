@@ -29,7 +29,7 @@ PwmControl::~PwmControl()
 
 void PwmControl::ResetValues()
 {
-    pwmLimit = 25;
+    pwmLimit = 200;
 }
 
 void PwmControl::stop()
@@ -47,7 +47,7 @@ bool PwmControl::initwiringPi()
     }
     else
     {
-
+        pwmSetClock(50);
         softPwmCreate(PWM_ESC1,0,pwmLimit);
         softPwmWrite(PWM_ESC1, 0);
         softPwmCreate(PWM_ESC2,0,pwmLimit);

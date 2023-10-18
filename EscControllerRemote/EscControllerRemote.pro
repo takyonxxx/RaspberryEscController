@@ -27,8 +27,17 @@ INCLUDEPATH += .
 RESOURCES += \
     resources.qrc
 
-ios: QMAKE_INFO_PLIST = ./ios/Info.plist
-macos: QMAKE_INFO_PLIST = ./macos/Info.plist
+macos {
+    QMAKE_INFO_PLIST = ./macos/Info.plist
+    QMAKE_ASSET_CATALOGS = $$PWD/macos/Assets.xcassets
+    QMAKE_ASSET_CATALOGS_APP_ICON = "AppIcon"
+}
+
+ios {
+    QMAKE_INFO_PLIST = ./ios/Info.plist
+    QMAKE_ASSET_CATALOGS = $$PWD/ios/Assets.xcassets
+    QMAKE_ASSET_CATALOGS_APP_ICON = "AppIcon"
+}
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
