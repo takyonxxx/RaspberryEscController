@@ -46,7 +46,6 @@ private slots:
     void on_Exit();
 
     void on_scrollPwmR_sliderMoved(int position);
-
     void on_scrollPwmL_sliderMoved(int position);
 
 signals:

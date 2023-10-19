@@ -20,16 +20,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->labelPwmL->setStyleSheet("font-size: 16pt; color: #ffffff; background-color: #239566;");
     ui->labelPwmValueR->setStyleSheet("font-size: 16pt; color: #ffffff; background-color: #239566;");
     ui->labelPwmValueL->setStyleSheet("font-size: 16pt; color: #ffffff; background-color: #239566;");
-    m_bleConnection = new BluetoothClient();
+    ui->lineEdit_DeviceName->setStyleSheet("font-size: 18pt; color: #ffffff; background-color: #239566;");
+    m_bleConnection = new BluetoothClient();    
 
     connect(m_bleConnection, &BluetoothClient::statusChanged, this, &MainWindow::statusChanged);
     connect(m_bleConnection, SIGNAL(changedState(BluetoothClient::bluetoothleState)),this,SLOT(changedState(BluetoothClient::bluetoothleState)));
 
-    connect(ui->m_pBConnect, SIGNAL(clicked()),this, SLOT(on_ConnectClicked()));   
-    connect(ui->m_pBExit, SIGNAL(clicked()),this, SLOT(on_Exit()));  
+    connect(ui->m_pBConnect, SIGNAL(clicked()),this, SLOT(on_ConnectClicked()));
+    connect(ui->m_pBExit, SIGNAL(clicked()),this, SLOT(on_Exit()));
 
     statusChanged("No Device Connected.");
-
 }
 
 void MainWindow::changedState(BluetoothClient::bluetoothleState state){
@@ -38,7 +38,8 @@ void MainWindow::changedState(BluetoothClient::bluetoothleState state){
 
     case BluetoothClient::Scanning:
     {
-        statusChanged("Searching for low energy devices...");
+        auto service_name = QString(ui->lineEdit_DeviceName->text());
+        m_bleConnection->setService_name(service_name);
         break;
     }
     case BluetoothClient::ScanFinished:

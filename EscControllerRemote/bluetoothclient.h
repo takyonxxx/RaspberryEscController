@@ -46,6 +46,8 @@ public:
     void getDeviceList(QList<QString> &qlDevices);
     void disconnectFromDevice();
 
+    void setService_name(const QString &newService_name);
+
 private slots:
     /* Slots for QBluetothDeviceDiscoveryAgent */
     void addDevice(const QBluetoothDeviceInfo&);
@@ -76,15 +78,14 @@ signals:
     void newData(QByteArray data);
     void changedState(BluetoothClient::bluetoothleState newState);
 
-
 private:
 
     QLowEnergyController *m_control;
+    QString m_service_name{};
+    QBluetoothUuid current_gatt{};
 
-    DeviceInfo m_currentDevice;
     QBluetoothDeviceDiscoveryAgent *m_deviceDiscoveryAgent;
-    QList<QObject*> m_qlDevices;
-    QList<QString> m_qlFoundDevices;
+    DeviceInfo *current_device{};
     QVector<quint16> m_qvMeasurements;
 
     QLowEnergyService *m_service;
