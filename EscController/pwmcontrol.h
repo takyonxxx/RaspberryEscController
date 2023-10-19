@@ -26,6 +26,8 @@ public:
     void setPwm(int, int);
     void stop();
 
+    int getPwm() const;
+
 private:
 
     std::mutex mutex_loop;

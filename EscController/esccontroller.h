@@ -19,6 +19,8 @@ public:
 private:
     void createMessage(uint8_t msgId, uint8_t rw, QByteArray payload, QByteArray *result);
     bool parseMessage(QByteArray *data, uint8_t &command, QByteArray &value, uint8_t &rw);
+    void sendData(uint8_t command, uint8_t value);
+    void sendString(uint8_t command, QString value);
 
     GattServer *gattServer{};
     RobotControl *robotControl{};

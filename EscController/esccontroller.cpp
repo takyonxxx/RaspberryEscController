@@ -72,6 +72,25 @@ void EscController::onConnectionStatedChanged(bool state)
     }
 }
 
+void EscController::sendData(uint8_t command, uint8_t value)
+{
+    QByteArray payload;
+    payload[0] = value;
+
+    QByteArray sendData;
+    createMessage(command, mWrite, payload, &sendData);
+    gattServer->writeValue(sendData);
+}
+
+void EscController::sendString(uint8_t command, QString value)
+{
+    QByteArray sendData;
+    QByteArray bytedata;
+    bytedata = value.toLocal8Bit();
+    createMessage(command, mWrite, bytedata, &sendData);
+    gattServer->writeValue(sendData);
+}
+
 void EscController::onDataReceived(QByteArray data)
 {
     uint8_t parsedCommand;
@@ -86,7 +105,27 @@ void EscController::onDataReceived(QByteArray data)
 
 //    qDebug() << "Read/Write" << rw << "Value : " <<  value;
 
-    if(rw == mWrite)
+    if(rw == mRead)
+    {
+        auto pwm_value = QString("Pwm value:") + QString::number(pwmControl->getPwm());
+
+        switch (parsedCommand)
+        {
+        case mEscValue1:
+        {
+            sendString(mData, pwm_value);
+            break;
+        }
+        case mEscValue2:
+        {
+            sendString(mData, pwm_value);
+            break;
+        }
+        default:
+            break;
+        }
+    }
+    else if(rw == mWrite)
     {
         switch (parsedCommand)
         {

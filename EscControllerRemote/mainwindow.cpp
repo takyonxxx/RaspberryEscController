@@ -92,14 +92,7 @@ void MainWindow::DataHandler(QByteArray data)
     uint8_t rw;
     QByteArray parsedValue;
     parseMessage(&data, parsedCommand, parsedValue, rw);
-    bool ok;
-    int value =  parsedValue.toHex().toInt(&ok, 16);
-
-    if(rw == mRead)
-    {
-
-    }
-    else if(rw == mWrite)
+    if(rw == mWrite)
     {
         switch(parsedCommand){       
         case mData:
@@ -212,14 +205,16 @@ void MainWindow::on_Exit()
 void MainWindow::on_scrollPwmR_sliderMoved(int value)
 {
     auto pwm = value * 25 / 100;
-    sendCommand(mEscValue1, static_cast<uint8_t>(pwm));
     ui->labelPwmValueR->setText(QString::number(pwm));
+    sendCommand(mEscValue1, static_cast<uint8_t>(pwm));
+    requestData(mEscValue1);
 }
 
 void MainWindow::on_scrollPwmL_sliderMoved(int value)
 {
     auto pwm = value * 25 / 100;
-    sendCommand(mEscValue2, static_cast<uint8_t>(pwm));
     ui->labelPwmValueR->setText(QString::number(pwm));
+    sendCommand(mEscValue2, static_cast<uint8_t>(pwm));
+    requestData(mEscValue2);
 }
 

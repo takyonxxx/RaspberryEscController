@@ -37,6 +37,11 @@ void PwmControl::stop()
     m_stop = true;
 }
 
+int PwmControl::getPwm() const
+{
+    return pwm;
+}
+
 
 bool PwmControl::initwiringPi()
 {
