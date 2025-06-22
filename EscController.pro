@@ -8,15 +8,13 @@ TARGET = esccontrol
 TEMPLATE = app
 
 SOURCES += \
-    esccontrol.cpp \
     main.cpp \
     esccontrol.cpp
 
 HEADERS += \
-    esccontrol.h \
     esccontrol.h
 
-LIBS += -lm -lwiringPi -li2c -lpthread
+LIBS += -lwiringPi -lpthread
 
 DISTFILES += \
     README.md

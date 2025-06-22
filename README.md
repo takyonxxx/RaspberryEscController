@@ -20,5 +20,10 @@
  
  # Install I2C development packages
  sudo apt install libi2c-dev i2c-tools 
-
+ 
+ # Install WiringPi from source
+ git clone https://github.com/WiringPi/WiringPi.git
+ cd WiringPi
+ sudo ./build
+ cd ..
  ```
