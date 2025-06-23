@@ -1,94 +1,52 @@
 #include <QCoreApplication>
-#include <QTimer>
-#include <QDebug>
-#include <QThread>
+#include "servocontroller.h"
 #include <iostream>
-#include <wiringPi.h>
-#include "esccontrol.h"
+#include <signal.h>
+
+// Global servo controller instance for signal handling
+ServoController *g_servoController = nullptr;
+
+// Signal handler for clean shutdown
+void signalHandler(int signal) {
+    std::cout << "\nReceived signal " << signal << ", shutting down..." << std::endl;
+    if (g_servoController) {
+        g_servoController->emergencyStop();
+        g_servoController->stop();
+    }
+    QCoreApplication::quit();
+}
 
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
 
-    qInfo() << "ESC Control Test Program for Qt6";
-    qInfo() << "Qt Version:" << qVersion();
+    std::cout << "Starting Balance Robot Servo Controller" << std::endl;
 
-    // WiringPi'yi başlat
-    if (wiringPiSetupGpio() == -1) {
-        qCritical() << "Failed to initialize wiringPi!";
-        qCritical() << "Make sure you're running with sudo privileges";
+    // Set up signal handlers for clean shutdown
+    signal(SIGINT, signalHandler);   // Ctrl+C
+    signal(SIGTERM, signalHandler);  // Termination signal
+
+    // Create servo controller
+    ServoController servoController;
+    g_servoController = &servoController;
+
+    // Initialize the servo controller system
+    if (!servoController.initialize()) {
+        std::cerr << "Failed to initialize servo controller" << std::endl;
         return -1;
     }
 
-    qInfo() << "WiringPi initialized successfully";
+    std::cout << "Servo controller initialized successfully" << std::endl;
+    std::cout << "System ready - waiting for BLE connections..." << std::endl;
+    std::cout << "Send ARM command (0x03) via BLE to enable servo control" << std::endl;
+    std::cout << "Press Ctrl+C to exit" << std::endl;
 
-    // ESC kontrolcüsünü oluştur (GPIO 18 pini için)
-    ESCControl esc(18);
+    // Run the Qt event loop
+    int result = app.exec();
 
-    // ESC'yi başlat
-    if (!esc.initialize()) {
-        qCritical() << "Failed to initialize ESC!";
-        return -1;
-    }
+    // Clean shutdown
+    std::cout << "Shutting down servo controller..." << std::endl;
+    servoController.stop();
 
-    qInfo() << "ESC initialized successfully";
-    qInfo() << "Starting test sequence...";
-
-    // Test 1: Neutral pozisyonda bekle
-    qInfo() << "1. Neutral position (3 seconds)";
-    esc.setNeutral();
-    QThread::msleep(3000);
-
-    // Test 2: Forward hareket testi
-    qInfo() << "2. Forward movement test";
-    for (int power = 0; power <= 50; power += 10) {
-        qInfo() << "Forward power:" << power << "%";
-        esc.setForward(power);
-        QThread::msleep(1000);
-    }
-
-    // Neutral'a geri dön
-    esc.setNeutral();
-    QThread::msleep(2000);
-
-    // Test 3: Reverse hareket testi
-    qInfo() << "3. Reverse movement test";
-    for (int power = 0; power <= 50; power += 10) {
-        qInfo() << "Reverse power:" << power << "%";
-        esc.setReverse(power);
-        QThread::msleep(1000);
-    }
-
-    // Neutral'a geri dön
-    esc.setNeutral();
-    QThread::msleep(2000);
-
-    // Test 4: Throttle ile kontrol
-    qInfo() << "4. Throttle control test";
-    int throttleValues[] = {0, 25, 50, 0, -25, -50, 0};
-    for (int throttle : throttleValues) {
-        qInfo() << "Throttle:" << throttle << "%";
-        esc.setThrottle(throttle);
-        QThread::msleep(2000);
-    }
-
-    // Test 5: PWM değeri ile direkt kontrol
-    qInfo() << "5. Direct PWM control test";
-    int pwmValues[] = {1500, 1600, 1700, 1500, 1400, 1300, 1500};
-    for (int pwm : pwmValues) {
-        qInfo() << "PWM:" << pwm << "μs";
-                                    esc.setPulseWidth(pwm);
-        QThread::msleep(2000);
-    }
-
-    // Test tamamlandı
-    qInfo() << "=== Test completed ===";
-    esc.setNeutral();
-    QThread::msleep(2000);
-
-    // ESC'yi durdur
-    esc.stop();
-
-    qInfo() << "Program finished";
-    return 0;
+    return result;
 }
