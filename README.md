@@ -29,4 +29,4 @@ cd WiringPi
 sudo ./build
 cd ..
 ```
-<img src="https://github.com/takyonxxx/RaspberryPI_Esc_Controller/blob/main/raspberry_pinout.jpg" alt="Mobile Remote Control Interface" width="600">
+<img src="https://github.com/takyonxxx/RaspberryPI_Esc_Controller/blob/main/raspberry_pinout.jpg" alt="Mobile Remote Control Interface" width="800">
