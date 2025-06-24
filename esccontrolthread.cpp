@@ -164,7 +164,6 @@ void ESCControlThread::setESC1PulseWidth(int pulseWidthUs)
     int constrainedPulseWidth = constrainPulseWidth(pulseWidthUs);
     setCommand(constrainedPulseWidth, m_currentCommand.esc2PulseWidth,
                m_currentCommand.esc3PulseWidth, m_currentCommand.esc4PulseWidth);
-    std::cout << "ESC1 pulse width set to " << constrainedPulseWidth << "μs" << std::endl;
 }
 
 void ESCControlThread::setESC2PulseWidth(int pulseWidthUs)
@@ -172,7 +171,6 @@ void ESCControlThread::setESC2PulseWidth(int pulseWidthUs)
     int constrainedPulseWidth = constrainPulseWidth(pulseWidthUs);
     setCommand(m_currentCommand.esc1PulseWidth, constrainedPulseWidth,
                m_currentCommand.esc3PulseWidth, m_currentCommand.esc4PulseWidth);
-    std::cout << "ESC2 pulse width set to " << constrainedPulseWidth << "μs" << std::endl;
 }
 
 void ESCControlThread::setESC3PulseWidth(int pulseWidthUs)
@@ -180,7 +178,6 @@ void ESCControlThread::setESC3PulseWidth(int pulseWidthUs)
     int constrainedPulseWidth = constrainPulseWidth(pulseWidthUs);
     setCommand(m_currentCommand.esc1PulseWidth, m_currentCommand.esc2PulseWidth,
                constrainedPulseWidth, m_currentCommand.esc4PulseWidth);
-    std::cout << "ESC3 pulse width set to " << constrainedPulseWidth << "μs" << std::endl;
 }
 
 void ESCControlThread::setESC4PulseWidth(int pulseWidthUs)
@@ -188,31 +185,26 @@ void ESCControlThread::setESC4PulseWidth(int pulseWidthUs)
     int constrainedPulseWidth = constrainPulseWidth(pulseWidthUs);
     setCommand(m_currentCommand.esc1PulseWidth, m_currentCommand.esc2PulseWidth,
                m_currentCommand.esc3PulseWidth, constrainedPulseWidth);
-    std::cout << "ESC4 pulse width set to " << constrainedPulseWidth << "μs" << std::endl;
 }
 
 void ESCControlThread::setESC1Neutral()
 {
     setESC1PulseWidth(PWM_NEUTRAL_US);
-    std::cout << "ESC1 set to neutral" << std::endl;
 }
 
 void ESCControlThread::setESC2Neutral()
 {
     setESC2PulseWidth(PWM_NEUTRAL_US);
-    std::cout << "ESC2 set to neutral" << std::endl;
 }
 
 void ESCControlThread::setESC3Neutral()
 {
     setESC3PulseWidth(PWM_NEUTRAL_US);
-    std::cout << "ESC3 set to neutral" << std::endl;
 }
 
 void ESCControlThread::setESC4Neutral()
 {
     setESC4PulseWidth(PWM_NEUTRAL_US);
-    std::cout << "ESC4 set to neutral" << std::endl;
 }
 
 // Synchronized control methods
@@ -220,13 +212,11 @@ void ESCControlThread::setAllPulseWidth(int pulseWidthUs)
 {
     int constrainedPulseWidth = constrainPulseWidth(pulseWidthUs);
     setCommand(constrainedPulseWidth, constrainedPulseWidth, constrainedPulseWidth, constrainedPulseWidth);
-    std::cout << "All ESCs pulse width set to " << constrainedPulseWidth << "μs" << std::endl;
 }
 
 void ESCControlThread::setAllNeutral()
 {
     setAllPulseWidth(PWM_NEUTRAL_US);
-    std::cout << "All ESCs set to neutral" << std::endl;
 }
 
 // Multi-ESC control
@@ -238,10 +228,6 @@ void ESCControlThread::setAllDifferentialPulseWidth(int esc1PulseWidth, int esc2
     int constrainedPulseWidth4 = constrainPulseWidth(esc4PulseWidth);
 
     setCommand(constrainedPulseWidth1, constrainedPulseWidth2, constrainedPulseWidth3, constrainedPulseWidth4);
-    std::cout << "Differential control - ESC1: " << constrainedPulseWidth1
-              << "μs, ESC2: " << constrainedPulseWidth2
-              << "μs, ESC3: " << constrainedPulseWidth3
-              << "μs, ESC4: " << constrainedPulseWidth4 << "μs" << std::endl;
 }
 
 // Status methods
@@ -396,16 +382,6 @@ void ESCControlThread::performSafetyChecks()
     }
     if (m_esc4 && !m_esc4->isRunning()) {
         std::cerr << "Warning: ESC4 is not running" << std::endl;
-    }
-
-    // Check command age (prevent stale commands)
-    auto now = std::chrono::steady_clock::now();
-    auto commandAge = std::chrono::duration_cast<std::chrono::milliseconds>(
-                          now - m_lastCommand.timestamp).count();
-
-    if (commandAge > 1000) { // If no command for 1 second, go to neutral
-        std::cout << "No recent commands, setting all ESCs to neutral for safety" << std::endl;
-        setCommand(PWM_NEUTRAL_US, PWM_NEUTRAL_US, PWM_NEUTRAL_US, PWM_NEUTRAL_US);
     }
 }
 

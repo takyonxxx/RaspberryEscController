@@ -101,8 +101,8 @@ void ESCControl::setPulseWidth(int pulseWidthUs)
     int constrainedWidth = constrainPulseWidth(pulseWidthUs);
     m_pulseWidthUs = constrainedWidth;
 
-    std::cout << "ESC pin " << m_gpioPin << ": Pulse width set to "
-              << constrainedWidth << "μs" << std::endl;
+    // std::cout << "ESC pin " << m_gpioPin << ": Pulse width set to "
+    //           << constrainedWidth << "μs" << std::endl;
 }
 
 void ESCControl::setThrottle(int throttlePercent)
@@ -113,8 +113,8 @@ void ESCControl::setThrottle(int throttlePercent)
     int pulseWidth = throttleToPulseWidth(throttlePercent);
     setPulseWidth(pulseWidth);
 
-    std::cout << "ESC pin " << m_gpioPin << ": Throttle set to "
-              << throttlePercent << "% (" << pulseWidth << "μs)" << std::endl;
+    // std::cout << "ESC pin " << m_gpioPin << ": Throttle set to "
+    //           << throttlePercent << "% (" << pulseWidth << "μs)" << std::endl;
 }
 
 void ESCControl::setForward(int power)
@@ -123,7 +123,7 @@ void ESCControl::setForward(int power)
     power = std::max(0, std::min(100, power));
     setThrottle(power);
 
-    std::cout << "ESC pin " << m_gpioPin << ": Forward power " << power << "%" << std::endl;
+    // std::cout << "ESC pin " << m_gpioPin << ": Forward power " << power << "%" << std::endl;
 }
 
 void ESCControl::setReverse(int power)
@@ -132,13 +132,13 @@ void ESCControl::setReverse(int power)
     power = std::max(0, std::min(100, power));
     setThrottle(-power);
 
-    std::cout << "ESC pin " << m_gpioPin << ": Reverse power " << power << "%" << std::endl;
+    // std::cout << "ESC pin " << m_gpioPin << ": Reverse power " << power << "%" << std::endl;
 }
 
 void ESCControl::setNeutral()
 {
     setPulseWidth(PWM_NEUTRAL_US);
-    std::cout << "ESC pin " << m_gpioPin << ": Set to neutral position" << std::endl;
+    // std::cout << "ESC pin " << m_gpioPin << ": Set to neutral position" << std::endl;
 }
 
 bool ESCControl::isRunning() const

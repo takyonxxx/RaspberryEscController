@@ -58,7 +58,7 @@ void GattServer::handleConnected()
         }
 
         // Servis başlatma onayı mesajı gönder
-        QByteArray welcomeMsg = "Balance Robot ready!";
+        QByteArray welcomeMsg = "Esc ready!";
         writeValue(welcomeMsg);
         emit connectionState(m_ConnectionState);
     }
@@ -153,7 +153,7 @@ void GattServer::startBleService()
     advertisingData.setDiscoverability(QLowEnergyAdvertisingData::DiscoverabilityGeneral);
     advertisingData.setServices(QList<QBluetoothUuid>() << customServiceUuid);
     advertisingData.setIncludePowerLevel(true);
-    advertisingData.setLocalName("Balance Robot");
+    advertisingData.setLocalName("Esc Controller");
 
     // ServicesData'yı da ayarla
     QLowEnergyAdvertisingData scanResponseData;

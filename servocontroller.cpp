@@ -135,8 +135,8 @@ void ServoController::onBleDataReceived(const QByteArray &data)
         return;
     }
 
-    std::cout << "Received BLE command: 0x" << std::hex << (int)message.command
-              << " with " << std::dec << (int)message.len << " bytes of data" << std::endl;
+    // std::cout << "Received BLE command: 0x" << std::hex << (int)message.command
+    //           << " with " << std::dec << (int)message.len << " bytes of data" << std::endl;
 
     // Handle servo commands
     switch (message.command) {
@@ -206,22 +206,15 @@ void ServoController::handleServoCommand(int servoChannel, const MessagePack &me
     int pwmValue1 = validatePwmValue(rawPwm1);
     int pwmValue2 = validatePwmValue(rawPwm2);
     int pwmValue3 = validatePwmValue(rawPwm3);
-    int pwmValue4 = validatePwmValue(rawPwm4);
-
-    std::cout << "Servo Channel " << servoChannel << " - PWM Values: "
-              << "ESC1=" << pwmValue1 << "μs, "
-              << "ESC2=" << pwmValue2 << "μs, "
-              << "ESC3=" << pwmValue3 << "μs, "
-              << "ESC4=" << pwmValue4 << "μs" << std::endl;
+    int pwmValue4 = validatePwmValue(rawPwm4);   
 
         // Apply PWM values to all 4 ESCs
-        switch (servoChannel) {
+    switch (servoChannel) {
     case 1: // mSERVO1 - Set all 4 ESCs with received values
         escControl->setESC1PulseWidth(pwmValue1);
         escControl->setESC2PulseWidth(pwmValue2);
         escControl->setESC3PulseWidth(pwmValue3);
         escControl->setESC4PulseWidth(pwmValue4);
-        std::cout << "SERVO1: All ESCs set with individual values" << std::endl;
         break;
 
     case 2: // mSERVO2 - Set all 4 ESCs with received values
@@ -229,7 +222,6 @@ void ServoController::handleServoCommand(int servoChannel, const MessagePack &me
         escControl->setESC2PulseWidth(pwmValue2);
         escControl->setESC3PulseWidth(pwmValue3);
         escControl->setESC4PulseWidth(pwmValue4);
-        std::cout << "SERVO2: All ESCs set with individual values" << std::endl;
         break;
 
     case 3: // mSERVO3 - Set all 4 ESCs with received values
@@ -237,7 +229,6 @@ void ServoController::handleServoCommand(int servoChannel, const MessagePack &me
         escControl->setESC2PulseWidth(pwmValue2);
         escControl->setESC3PulseWidth(pwmValue3);
         escControl->setESC4PulseWidth(pwmValue4);
-        std::cout << "SERVO3: All ESCs set with individual values" << std::endl;
         break;
 
     case 4: // mSERVO4 - Set all 4 ESCs with received values
@@ -245,13 +236,18 @@ void ServoController::handleServoCommand(int servoChannel, const MessagePack &me
         escControl->setESC2PulseWidth(pwmValue2);
         escControl->setESC3PulseWidth(pwmValue3);
         escControl->setESC4PulseWidth(pwmValue4);
-        std::cout << "SERVO4: All ESCs set with individual values" << std::endl;
         break;
 
     default:
         std::cerr << "Invalid servo channel: " << servoChannel << std::endl;
         return;
     }
+
+    std::cout << "Set Pwm to servo channel " << servoChannel << " - PWM Values: "
+              << "ESC1=" << pwmValue1 << "μs, "
+              << "ESC2=" << pwmValue2 << "μs, "
+              << "ESC3=" << pwmValue3 << "μs, "
+              << "ESC4=" << pwmValue4 << "μs" << std::endl;
 
     // Send acknowledgment with all 4 PWM values
     sendAcknowledgment(servoChannel, pwmValue1, pwmValue2, pwmValue3, pwmValue4);
@@ -291,8 +287,8 @@ void ServoController::sendAcknowledgment(int channel, int pwm1, int pwm2, int pw
     QByteArray response((char*)responseBuffer, responseLen);
     gattServer->writeValue(response);
 
-    std::cout << "Sent acknowledgment for channel " << channel
-              << " with PWMs: " << pwm1 << ", " << pwm2 << ", " << pwm3 << ", " << pwm4 << "μs" << std::endl;
+    // std::cout << "Sent acknowledgment for channel " << channel
+    //           << " with PWMs: " << pwm1 << ", " << pwm2 << ", " << pwm3 << ", " << pwm4 << "μs" << std::endl;
 }
 
 int ServoController::validatePwmValue(uint16_t rawPwm) const
