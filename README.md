@@ -81,14 +81,6 @@ cd RaspberryPI_Esc_Controller
 qmake
 make
 ```
-
-### Mobile Remote Control App
-```bash
-cd RemoteControl
-qmake
-make
-```
-
 ## Motor Control Features
 - Individual PWM control for each motor (1000-2000μs range)
 - Real-time mobile remote control via Bluetooth LE
@@ -131,7 +123,6 @@ sudo ./esc_controller
 - System must be "Armed" before motor commands are accepted
 - Automatic disarm and neutral position on disconnect
 - Emergency stop button sets all motors to neutral
-- Command timeout protection (auto-neutral after 2 seconds of no commands)
 
 ## Communication Protocol
 
@@ -156,13 +147,6 @@ Data: [PWM1_LOW, PWM1_HIGH, PWM2_LOW, PWM2_HIGH, PWM3_LOW, PWM3_HIGH, PWM4_LOW, 
 2. **BLE connection fails**: Ensure Bluetooth is enabled and device is discoverable
 3. **PWM timing issues**: Verify WiringPi installation and GPIO permissions
 4. **Build errors**: Check Qt6 and development package installations
-
-### Debug Output
-The system provides detailed console output for:
-- ESC initialization status
-- BLE connection events
-- PWM command processing
-- Safety system activations
 
 ## License
 This project is open source. Please check the license file for details.
