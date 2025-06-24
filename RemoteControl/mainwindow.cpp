@@ -216,15 +216,10 @@ void MainWindow::createUI()
     QHBoxLayout *motorLayout = new QHBoxLayout();
     motorLayout->setSpacing(15);
 
-    m_motor1PWM = new MotorPWMWidget("Motor 1", this);
-    m_motor2PWM = new MotorPWMWidget("Motor 2", this);
-    m_motor3PWM = new MotorPWMWidget("Motor 3", this);
-    m_motor4PWM = new MotorPWMWidget("Motor 4", this);
-
-    m_motor1PWM->setMinimumWidth(100);
-    m_motor2PWM->setMinimumWidth(100);
-    m_motor3PWM->setMinimumWidth(100);
-    m_motor4PWM->setMinimumWidth(100);
+    m_motor1PWM = new MotorPWMWidget("M1", this);
+    m_motor2PWM = new MotorPWMWidget("M2", this);
+    m_motor3PWM = new MotorPWMWidget("M3", this);
+    m_motor4PWM = new MotorPWMWidget("M4", this);
 
     motorLayout->addWidget(m_motor1PWM);
     motorLayout->addWidget(m_motor2PWM);
