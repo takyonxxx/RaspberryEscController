@@ -2,7 +2,7 @@
 
 A Raspberry Pi-based Electronic Speed Controller system with mobile remote control capabilities.
 
-![Mobile Remote Control Interface](https://github.com/takyonxxx/RaspberryPI_Esc_Controller/blob/main/RemoteControl/mobile.jpg)
+<img src="https://github.com/takyonxxx/RaspberryPI_Esc_Controller/blob/main/RemoteControl/mobile.jpg" alt="Mobile Remote Control Interface" width="300">
 
 ## Hardware Requirements
 - Raspberry Pi 5 (4 or 3 may work with timing adjustments)
