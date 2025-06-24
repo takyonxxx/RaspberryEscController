@@ -123,6 +123,7 @@ sudo ./esc_controller
 - System must be "Armed" before motor commands are accepted
 - Automatic disarm and neutral position on disconnect
 - Emergency stop button sets all motors to neutral
+- Command timeout protection (auto-neutral after 2 seconds of no commands)
 
 ## Communication Protocol
 
@@ -138,6 +139,75 @@ Data: [PWM1_LOW, PWM1_HIGH, PWM2_LOW, PWM2_HIGH, PWM3_LOW, PWM3_HIGH, PWM4_LOW, 
 ### Example: Set Motor 1 to 1600μs
 ```
 [0xb0, 0x08, 0x01, 0xa0, 0x40, 0x06, 0xDC, 0x05, 0x78, 0x05, 0xA4, 0x06]
+```
+
+#### Detailed Message Breakdown:
+
+| Position | Hex Value | Decimal | Field | Description |
+|----------|-----------|---------|-------|-------------|
+| 0 | 0xb0 | 176 | **Header** | Fixed message header identifier |
+| 1 | 0x08 | 8 | **Length** | Payload length (8 bytes for 4 PWM values) |
+| 2 | 0x01 | 1 | **RW** | Read/Write flag (0x01 = Write command) |
+| 3 | 0xa0 | 160 | **Command** | Servo command (0xa0 = mSERVO1) |
+| 4 | 0x40 | 64 | **PWM1 Low** | Motor 1 PWM low byte |
+| 5 | 0x06 | 6 | **PWM1 High** | Motor 1 PWM high byte |
+| 6 | 0xDC | 220 | **PWM2 Low** | Motor 2 PWM low byte |
+| 7 | 0x05 | 5 | **PWM2 High** | Motor 2 PWM high byte |
+| 8 | 0x78 | 120 | **PWM3 Low** | Motor 3 PWM low byte |
+| 9 | 0x05 | 5 | **PWM3 High** | Motor 3 PWM high byte |
+| 10 | 0xA4 | 164 | **PWM4 Low** | Motor 4 PWM low byte |
+| 11 | 0x06 | 6 | **PWM4 High** | Motor 4 PWM high byte |
+
+#### PWM Value Reconstruction (Little-Endian):
+
+**Motor 1 PWM**: 
+```
+Low Byte:  0x40 = 64
+High Byte: 0x06 = 6
+PWM = (High << 8) | Low = (6 × 256) + 64 = 1600μs (Forward)
+```
+
+**Motor 2 PWM**:
+```
+Low Byte:  0xDC = 220  
+High Byte: 0x05 = 5
+PWM = (5 × 256) + 220 = 1500μs (Neutral)
+```
+
+**Motor 3 PWM**:
+```
+Low Byte:  0x78 = 120
+High Byte: 0x05 = 5  
+PWM = (5 × 256) + 120 = 1400μs (Reverse)
+```
+
+**Motor 4 PWM**:
+```
+Low Byte:  0xA4 = 164
+High Byte: 0x06 = 6
+PWM = (6 × 256) + 164 = 1700μs (Forward)
+```
+
+#### Message Result:
+This example message sets:
+- **Motor 1**: 1600μs (slight forward)
+- **Motor 2**: 1500μs (neutral/stopped)  
+- **Motor 3**: 1400μs (slight reverse)
+- **Motor 4**: 1700μs (moderate forward)
+
+#### Implementation:
+```cpp
+// Mobile app creates message:
+int pwm1 = 1600, pwm2 = 1500, pwm3 = 1400, pwm4 = 1700;
+payload.append(static_cast<char>(pwm1 & 0xFF));        // Low byte
+payload.append(static_cast<char>((pwm1 >> 8) & 0xFF)); // High byte
+// ... repeat for pwm2, pwm3, pwm4
+
+// Raspberry Pi decodes message:
+uint16_t pwm1 = (message.data[1] << 8) | message.data[0]; // 1600μs
+uint16_t pwm2 = (message.data[3] << 8) | message.data[2]; // 1500μs  
+uint16_t pwm3 = (message.data[5] << 8) | message.data[4]; // 1400μs
+uint16_t pwm4 = (message.data[7] << 8) | message.data[6]; // 1700μs
 ```
 
 ## Troubleshooting
