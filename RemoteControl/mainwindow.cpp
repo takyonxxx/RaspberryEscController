@@ -163,7 +163,7 @@ void MainWindow::createUI()
     setCentralWidget(m_centralWidget);
 
     m_mainLayout = new QVBoxLayout(m_centralWidget);
-    m_mainLayout->setSpacing(15);
+    m_mainLayout->setSpacing(10);
     m_mainLayout->setContentsMargins(10, 10, 10, 10);
 
     // Status label
@@ -176,15 +176,15 @@ void MainWindow::createUI()
 
     // Connection and control buttons
     QHBoxLayout *buttonLayout = new QHBoxLayout();
-    buttonLayout->setSpacing(10);
+    buttonLayout->setSpacing(8);
 
     m_connectButton = new QPushButton("Connect", this);
     m_armedButton = new QPushButton("Arm", this);
     m_allNeutralButton = new QPushButton("All Neutral", this);
     m_exitButton = new QPushButton("Exit", this);
 
-    QString buttonStyle = "QPushButton { color: white; background-color: #336699; padding: 12px; "
-                          "border-radius: 8px; font-size: 16px; font-weight: bold; min-height: 30px; } "
+    QString buttonStyle = "QPushButton { color: white; background-color: #336699; padding: 10px; "
+                          "border-radius: 8px; font-size: 14px; font-weight: bold; min-height: 25px; } "
                           "QPushButton:pressed { background-color: #1E3F5A; }";
 
     m_connectButton->setStyleSheet(buttonStyle);
@@ -197,18 +197,24 @@ void MainWindow::createUI()
     buttonLayout->addWidget(m_allNeutralButton);
     buttonLayout->addWidget(m_exitButton);
 
-    // Motor PWM controls
-    QGroupBox *motorGroup = new QGroupBox("Motor PWM Controls\n(1000=Reverse, 1500=Neutral, 2000=Forward)", this);
-    motorGroup->setStyleSheet("QGroupBox { color: black; font-size: 12px; font-weight: bold; "
+    // Motor PWM controls group
+    QGroupBox *motorGroup = new QGroupBox("Motor PWM Controls", this);
+    motorGroup->setStyleSheet("QGroupBox { color: black; font-size: 14px; font-weight: bold; "
                               "border: 2px solid #336699; border-radius: 10px; margin-top: 15px; padding: 10px; } "
-                              "QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top center; padding: 0 10px; "
-                              "text-align: center; }");
+                              "QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top center; padding: 0 10px; }");
 
-    // Make group box title word-wrap friendly
-    motorGroup->setTitle("Motor PWM Controls\n(1000=Rev, 1500=Neutral, 2000=Fwd)");
+    QVBoxLayout *motorGroupLayout = new QVBoxLayout(motorGroup);
+    motorGroupLayout->setSpacing(5);
 
-    QHBoxLayout *motorLayout = new QHBoxLayout(motorGroup);
-    motorLayout->setSpacing(5);
+    // PWM info label
+    QLabel *pwmInfoLabel = new QLabel("1000=Reverse | 1500=Neutral | 2000=Forward", this);
+    pwmInfoLabel->setStyleSheet("color: #666666; font-size: 14px; font-weight: normal; padding: 5px;");
+    pwmInfoLabel->setAlignment(Qt::AlignCenter);
+    pwmInfoLabel->setWordWrap(true);
+
+    // Motor controls layout
+    QHBoxLayout *motorLayout = new QHBoxLayout();
+    motorLayout->setSpacing(15);
 
     m_motor1PWM = new MotorPWMWidget("Motor 1", this);
     m_motor2PWM = new MotorPWMWidget("Motor 2", this);
@@ -224,6 +230,10 @@ void MainWindow::createUI()
     motorLayout->addWidget(m_motor2PWM);
     motorLayout->addWidget(m_motor3PWM);
     motorLayout->addWidget(m_motor4PWM);
+
+    // Add info label and motor controls to group
+    motorGroupLayout->addWidget(pwmInfoLabel);
+    motorGroupLayout->addLayout(motorLayout);
 
     // Add to main layout
     m_mainLayout->addWidget(m_textStatus);
